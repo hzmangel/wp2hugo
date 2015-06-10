@@ -12,13 +12,16 @@ from hugo_printer import HugoPrinter
 def main():
     wp_xml_parser = WordpressXMLParser(sys.argv[1])
 
-    meta = wp_xml_parser.get_meta()
-    cats = wp_xml_parser.get_categories()
-    tags = wp_xml_parser.get_tags()
-    posts = wp_xml_parser.get_public_posts()
-    drafts = wp_xml_parser.get_drafts()
+    wp_site_info = {
+        "meta": wp_xml_parser.get_meta(),
+        "cats": wp_xml_parser.get_categories(),
+        "tags": wp_xml_parser.get_tags(),
+        "posts": wp_xml_parser.get_public_posts(),
+        "drafts": wp_xml_parser.get_drafts(),
+    }
 
-    pprint(posts[-1])
+    hugo_printer = HugoPrinter(**wp_site_info)
+    hugo_printer.gen_config()
 
 if __name__ == '__main__':
     main()
