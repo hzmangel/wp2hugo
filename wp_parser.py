@@ -8,11 +8,14 @@ class WordpressXMLParser:
 
     def get_meta(self):
         return {
-            "title": self.tree.xpath("/rss/channel/title/text()")[0],
-            "link": self.tree.xpath("/rss/channel/link/text()")[0],
-            "description": self.tree.xpath("/rss/channel/description/text()")[0],
-            "pub_date": self.tree.xpath("/rss/channel/pubDate/text()")[0],
-            "language": self.tree.xpath("/rss/channel/language/text()")[0],
+            "title": str(self.tree.xpath("/rss/channel/title/text()")[0]),
+            "baseurl": str(self.tree.xpath("/rss/channel/link/text()")[0]),
+            "description": str(self.tree.xpath("/rss/channel/description/text()")[0]),
+            "language": str(self.tree.xpath("/rss/channel/language/text()")[0]),
+            "author": {
+                "name": str(self.tree.xpath("/rss/channel/wp:author/wp:author_display_name/text()", namespaces=self.ns)[0]),
+                "email": str(self.tree.xpath("/rss/channel/wp:author/wp:author_email/text()", namespaces=self.ns)[0]),
+            }
         }
 
     def get_categories(self):
