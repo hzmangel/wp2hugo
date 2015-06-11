@@ -22,6 +22,7 @@ def main():
 
     hugo_printer = HugoPrinter(**wp_site_info)
     hugo_printer.gen_config()
+    hugo_printer.gen_posts()
 
 if __name__ == '__main__':
     main()
