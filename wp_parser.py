@@ -24,9 +24,9 @@ class WordpressXMLParser:
 
         for r in categories:
             rslt.append({
-                "term_id": r.xpath("wp:term_id/text()", namespaces=self.ns)[0],
-                "nicename": r.xpath("wp:category_nicename/text()", namespaces=self.ns)[0],
-                "name": r.xpath("wp:cat_name/text()", namespaces=self.ns)[0],
+                "term_id": str(r.xpath("wp:term_id/text()", namespaces=self.ns)[0]),
+                "nicename": str(r.xpath("wp:category_nicename/text()", namespaces=self.ns)[0]),
+                "name": str(r.xpath("wp:cat_name/text()", namespaces=self.ns)[0]),
             })
 
         return rslt
@@ -37,9 +37,9 @@ class WordpressXMLParser:
 
         for r in tags:
             rslt.append({
-                "term_id": r.xpath("wp:term_id/text()", namespaces=self.ns)[0],
-                "nicename": r.xpath("wp:tag_slug/text()", namespaces=self.ns)[0],
-                "name": r.xpath("wp:tag_name/text()", namespaces=self.ns)[0],
+                "term_id": str(r.xpath("wp:term_id/text()", namespaces=self.ns)[0]),
+                "nicename": str(r.xpath("wp:tag_slug/text()", namespaces=self.ns)[0]),
+                "name": str(r.xpath("wp:tag_name/text()", namespaces=self.ns)[0]),
             })
 
         return rslt
@@ -50,15 +50,15 @@ class WordpressXMLParser:
 
         for r in posts:
             rslt.append({
-                "title": r.xpath("title/text()")[0],
-                "link": r.xpath("link/text()")[0],
-                "creator": r.xpath("dc:creator/text()", namespaces=self.ns)[0],
-                "content": r.xpath("content:encoded/text()", namespaces=self.ns)[0],
-                "post_date_gmt": r.xpath("wp:post_date_gmt/text()", namespaces=self.ns)[0],
-                "post_name": r.xpath("wp:post_name/text()", namespaces=self.ns)[0],
-                "post_status": r.xpath("wp:status/text()", namespaces=self.ns)[0],
-                "categories": r.xpath("category[@domain='category']/text()"),
-                "tags": r.xpath("category[@domain='post_tag']/text()"),
+                "title": str(r.xpath("title/text()")[0]),
+                "link": str(r.xpath("link/text()")[0]),
+                "creator": str(r.xpath("dc:creator/text()", namespaces=self.ns)[0]),
+                "content": str(r.xpath("content:encoded/text()", namespaces=self.ns)[0]),
+                "post_date": str(r.xpath("wp:post_date/text()", namespaces=self.ns)[0]),
+                "post_name": str(r.xpath("wp:post_name/text()", namespaces=self.ns)[0]),
+                "post_status": str(r.xpath("wp:status/text()", namespaces=self.ns)[0]),
+                "categories": [str(foo) for foo in r.xpath("category[@domain='category']/text()")],
+                "tags": [str(foo) for foo in r.xpath("category[@domain='post_tag']/text()")],
             })
 
         return rslt
@@ -69,14 +69,14 @@ class WordpressXMLParser:
 
         for r in drafts:
             rslt.append({
-                "title": r.xpath("title/text()")[0],
-                "link": r.xpath("link/text()")[0],
-                "creator": r.xpath("dc:creator/text()", namespaces=self.ns)[0],
-                "content": r.xpath("content:encoded/text()", namespaces=self.ns)[0],
-                "post_date_gmt": r.xpath("wp:post_date_gmt/text()", namespaces=self.ns)[0],
-                "post_status": r.xpath("wp:status/text()", namespaces=self.ns)[0],
-                "categories": r.xpath("category[@domain='category']/text()"),
-                "tags": r.xpath("category[@domain='post_tag']/text()"),
+                "title": str(r.xpath("title/text()")[0]),
+                "link": str(r.xpath("link/text()")[0]),
+                "creator": str(r.xpath("dc:creator/text()", namespaces=self.ns)[0]),
+                "content": str(r.xpath("content:encoded/text()", namespaces=self.ns)[0]),
+                "post_date": str(r.xpath("wp:post_date/text()", namespaces=self.ns)[0]),
+                "post_status": str(r.xpath("wp:status/text()", namespaces=self.ns)[0]),
+                "categories": [str(foo) for foo in r.xpath("category[@domain='category']/text()")],
+                "tags": [str(foo) for foo in r.xpath("category[@domain='post_tag']/text()")],
             })
 
         return rslt
