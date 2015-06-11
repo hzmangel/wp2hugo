@@ -72,19 +72,20 @@ class HugoPrinter:
             }
 
             page_path = os.path.join(self.post_dir, "%s-%s.md" % (p["post_date"].split(" ")[0], p["post_name"]))
-            content = p["content"]
 
-            summary = content.split('<!--more-->')[0]
-            if summary != content:
-                meta_info["summary"] = summary
-
-            if "<br" in content or '<p' in content:
-                content = html2text.html2text(content).strip()
+            more_tag = '<!--more-->'
+            content = more_tag.join([self.__convert_to_markdown(data) for data in p["content"].split(more_tag)])
 
             with open(page_path, "w") as fp:
                 fp.write(yaml.dump(meta_info, default_flow_style=False, explicit_start=True, allow_unicode=True))
                 fp.write("---\n")
                 fp.write(content)
+
+    def __convert_to_markdown(self, content):
+        if "<br" in content or '<p' in content:
+            return html2text.html2text(content).strip()
+        else:
+            return content.strip()
 
 
 
