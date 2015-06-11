@@ -1,6 +1,7 @@
 import yaml
 import os
 import logging
+import html2text
 
 
 class HugoPrinter:
@@ -19,12 +20,25 @@ class HugoPrinter:
         else:
             self.basedir = os.path.join('.', "hugo")
 
-        if not os.path.exists(self.basedir):
-            logging.warn("Directory %s not exists, creating it now..." % self.basedir)
-            os.makedirs(self.basedir)
-        elif not os.path.isdir(self.basedir):
-            logging.critical("%s is existing and not a dir" % self.basedir)
-            raise ValueError("%s is existing and not a dir" % self.basedir)
+        self.config_path = os.path.join(self.basedir, "config.yaml")
+        self.post_dir = os.path.join(self.basedir, "content/post")
+
+        self.__prepare_dir(self.basedir)
+        self.__prepare_dir(self.post_dir)
+
+    def __prepare_dir(self, dir_path):
+        if not os.path.exists(dir_path):
+            logging.warn("Directory %s not exists, creating it now..." % dir_path)
+            os.makedirs(dir_path)
+        elif not os.path.isdir(dir_path):
+            logging.critical("%s is existing and not a dir" % dir_path)
+            raise ValueError("%s is existing and not a dir" % dir_path)
+
+    def author(self):
+        try:
+            return self.meta["author"]["name"]
+        except KeyError:
+            return ""
 
     def gen_config(self):
         if self.meta is None:
@@ -41,6 +55,37 @@ class HugoPrinter:
             },
         }
 
-        with open(os.path.join(self.basedir, "config.yaml"), "w") as fp:
+        with open(self.config_path, "w") as fp:
             fp.write(yaml.dump(conf, default_flow_style=False, explicit_start=True, allow_unicode=True))
+
+    def gen_posts(self, download_assets=False):
+        if self.posts is None:
+            return
+
+        for p in self.posts:
+            meta_info = {
+                "title": p["title"],
+                "author": p["creator"],
+                "categories": p["categories"],
+                "tags": p["tags"],
+                "date": 'T'.join(p["post_date"].split(' ')),
+            }
+
+            page_path = os.path.join(self.post_dir, "%s-%s.md" % (p["post_date"].split(" ")[0], p["post_name"]))
+            content = p["content"]
+
+            summary = content.split('<!--more-->')[0]
+            if summary != content:
+                meta_info["summary"] = summary
+
+            if "<br" in content or '<p' in content:
+                content = html2text.html2text(content).strip()
+
+            with open(page_path, "w") as fp:
+                fp.write(yaml.dump(meta_info, default_flow_style=False, explicit_start=True, allow_unicode=True))
+                fp.write("---\n")
+                fp.write(content)
+
+
+
 
